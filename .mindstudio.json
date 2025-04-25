@@ -1,0 +1,18 @@
+{
+  "version": "1.0.0",
+  "workers": [
+    {
+      "id": "ba18d4d8-32bb-4bfe-8c3a-4355a1e45422",
+      "name": "EdutrailAI",
+      "slug": "TrailModuleSelector",
+      "workflows": [
+        {
+          "id": "c84be2a1-50f2-45e8-be61-9d111d89038a",
+          "name": "Main",
+          "launchVariables": [],
+          "outputVariables": []
+        }
+      ]
+    }
+  ]
+}
