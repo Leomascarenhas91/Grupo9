@@ -1,0 +1,80 @@
+{
+  "name": "EdutrailAI",
+  "flow": [
+    {
+      "id": "start",
+      "type": "Start"
+    },
+    {
+      "id": "welcome",
+      "type": "Generate Text",
+      "prompt": "Você é o EdutrailAI.  Se apresente, dê bom dia/boa tarde ou boa noite a depender da hora e descreva, em uma ou 2 frases, seu objetivo, que é 
+      proporcionar , a partir da experiencia, interesses e objetivos, uma trilha para cursos e alcançar seu objetivo.",
+      "settings": {
+        "temperature": 0.0,
+        "max_tokens": 50
+      }
+    },
+    {
+      "id": "perfil",
+      "type": "User Input",
+      "fields": [
+        "experiencia",
+        "interesses",
+        "objetivos"
+      ]
+    },
+    {
+      "id": "query",
+      "type": "Query Data Source",
+      "data_source": "Planilha de Curso",
+      "variable": "resultado_trilhas",
+      "max_results": 5,
+      "query_template": // Se não souber nível, não filtre por nivel
+      Find modules where
+        {{#experiencia}}{{^experiencia=="Não sei ao certo"}}nivel = {{experiencia}}{{/}}{{/}}
+        {{#interesses}}{{^interesses.contains("Não sei ao certo")}} and area in {{interesses}}{{/}}{{/}}
+        and descricao contains {{objetivos}}
+    },
+    {
+      "id": "recommend",
+      "type": "Generate Text",
+      "prompt": "Você recebeu estes módulos filtrados:"
+      {{resultado_trilhas}} "Com base no seu perfil:      • Experiência: "{{experiencia}}
+      "• Interesses: "{{interesses}}
+      "• Horas semanais: "{{horas_semanais}}
+      "• Objetivos: "{{objetivos}}
+      
+      {{#experiencia}} 
+      {{^experiencia=="Não sei ao certo"}}
+      "Por favor, apresente os módulos desta lista na sequência recomendada:"
+      {{/}}
+      {{/}}
+      
+      {{#experiencia=="Não sei ao certo"}}
+      "Como você não tem certeza do nível exato, sugiro começar por uma trilha introdutória geral:
+      1. Fundamentos de Lógica de Programação  
+      2. Introdução ao Git e GitHub  
+      3. Inglês Técnico para TI  
+      …  
+      Em seguida, você pode escolher um dos módulos específicos da lista.  "
+      {{/}}
+      
+      {{^experiencia=="Não sei ao certo"}}
+      "1. **Nome**: "{{modulo}}  
+         "**Descrição**: "{{descricao}}  
+         "**Duração**: "{{duracao}}"h"  
+         "**Por que encaixa**: …  
+      2. … (e assim por diante)
+      {{/}}”",
+      "settings": {
+        "temperature": 0.0,
+        "max_tokens": 2100
+      }
+    },
+    {
+      "id": "end",
+      "type": "End"
+    }
+  ]
+}
